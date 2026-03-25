@@ -1,7 +1,7 @@
 defmodule Sassone.MixProject do
   use Mix.Project
 
-  @source_url "https://github.com/sibill-it/sassone"
+  @source_url "https://github.com/lucacorti/sassone"
   @version "1.0.0"
 
   def project() do

@@ -69,7 +69,7 @@ defmodule Sassone.Builder.Field do
               default: nil
             ],
             struct: [
-              doc: "A struct deriving `Sibill.Builder` used to parse and build this element.",
+              doc: "A struct deriving `Sassone.Builder` used to parse and build this element.",
               type: :atom
             ],
             type: [

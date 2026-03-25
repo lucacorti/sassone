@@ -1,7 +1,7 @@
 Sassone
 ====
 
-[![Test suite](https://github.com/sibill-it/sassone/actions/workflows/test.yml/badge.svg)](https://github.com/sibill-it/sassone/actions/workflows/test.yml)
+[![Test suite](https://github.com/lucacorti/sassone/actions/workflows/test.yml/badge.svg)](https://github.com/lucacorti/sassone/actions/workflows/test.yml)
 [![Module Version](https://img.shields.io/hexpm/v/sassone.svg)](https://hex.pm/packages/sassone)
 
 Sassone is an XML SAX parser and encoder in Elixir that focuses on speed, usability and standard compliance.
@@ -242,7 +242,7 @@ against.
 
 Therefore the conclusion in this section is only for reference purpose. Please
 feel free to benchmark against your target documents. The benchmark suite can be found
-in [bench/](https://github.com/sibill-it/sassone/tree/main/bench).
+in [bench/](https://github.com/lucacorti/sassone/tree/main/bench).
 
 A rule of thumb is that we should compare apple to apple. Some XML parsers
 target only specific types of XML. Therefore some indicators are provided in the
@@ -265,13 +265,13 @@ Some quick and biased conclusions from the benchmark suite:
 
 ## Contributing
 
-If you have any issues or ideas, feel free to write to https://github.com/sibill-it/sassone/issues.
+If you have any issues or ideas, feel free to write to https://github.com/lucacorti/sassone/issues.
 
 To start developing:
 
 1. Fork the repository.
 2. Write your code and related tests.
-3. Create a pull request at https://github.com/sibill-it/sassone/pulls.
+3. Create a pull request at https://github.com/lucacorti/sassone/pulls.
 
 ## Copyright and License
 
