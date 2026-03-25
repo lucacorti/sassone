@@ -32,7 +32,7 @@ defprotocol Sassone.Builder do
   >
   > The builder protocol preserves field ordering, so if you need fields to be
   > mapped to elments appearing in a a specific order in XML when building with
-  > `Sassone.XML.build/2`, be sure to list them in that spefic order in the `fields`
+  > `Sassone.XML.build/1`, be sure to list them in that spefic order in the `fields`
   > option.
   >
   > Also note that ordering is not enforced by the parser, so parsing is not strict
