@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.0 - 2024-09-16
+## v1.0.0 - 2026-03-25
 
 * Add support for `{:cont, handler, state}` as `Saxy.Handler` callbacks return value.
   This allows for splitting the parser in multiple handlers.
