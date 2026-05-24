@@ -8,7 +8,7 @@ defmodule Sassone.MixProject do
     [
       app: :sassone,
       version: @version,
-      elixir: "~> 1.15",
+      elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "Sassone",
       deps: deps(),
