@@ -203,7 +203,7 @@ end
 ```
 
 ```elixir
-iex> struct.changeset(struct(schema), map) |> Ecto.Changeset.apply_action(:cast)
+iex> Person.changeset(%Person{}, map) |> Ecto.Changeset.apply_action(:cast)
 {:ok, %Person{gender: "female", name: "Alice"}}
 ```
 
