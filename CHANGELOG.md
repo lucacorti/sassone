@@ -1,6 +1,12 @@
 # Changelog
 
-## v1.0.0 - 2026-03-25
+## 1.0.1 - 2026-07-15
+
+* Update to elixir 1.20 and erlang 29 by @lucacorti in https://github.com/lucacorti/sassone/pull/2
+* Backport minor parser fixes on utf-8 binaries in comments from saxy
+* Update dependencies
+
+## 1.0.0 - 2026-03-25
 
 * Add support for `{:cont, handler, state}` as `Saxy.Handler` callbacks return value.
   This allows for splitting the parser in multiple handlers.
