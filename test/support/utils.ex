@@ -29,7 +29,7 @@ defmodule SassoneTest.Utils do
     "test/support/fixture/"
     |> Kernel.<>(name)
     |> Path.relative_to_cwd()
-    |> File.stream!([], 100)
+    |> File.stream!(100)
   end
 
   def xml_quote, do: one_of([constant(?"), constant(?')])
