@@ -6,5 +6,5 @@
   "nimble_options": {:hex, :nimble_options, "1.1.1", "e3a492d54d85fc3fd7c5baf411d9d2852922f66e69476317787a7b2bb000a61b", [:mix], [], "hexpm", "821b2470ca9442c4b6984882fe9bb0389371b8ddec4d45a9504f00a66f650b44"},
   "recase": {:hex, :recase, "0.9.1", "82d2e2e2d4f9e92da1ce5db338ede2e4f15a50ac1141fc082b80050b9f49d96e", [:mix], [], "hexpm", "19ba03ceb811750e6bec4a015a9f9e45d16a8b9e09187f6d72c3798f454710f3"},
   "statistex": {:hex, :statistex, "1.1.1", "73612aa7f79e53c30569be065fd121e380f1cf57bc4c2da5b41be9246da18df9", [:mix], [], "hexpm", "310c4b49b34adf683de3103639006bed233ab54c08a4add65a531448e653857c"},
-  "xml_builder": {:hex, :xml_builder, "2.4.0", "b20d23077266c81f593360dc037ea398461dddb6638a329743da6c73afa56725", [:mix], [], "hexpm", "833e325bb997f032b5a1b740d2fd6feed3c18ca74627f9f5f30513a9ae1a232d"},
+  "xml_builder": {:hex, :xml_builder, "2.4.1", "6f3c00f3651a87a1ec97c9889889137f14fec38bd592e7a2a96f839166be9544", [:mix], [], "hexpm", "1b9a1146feb1e6c94e29d8acad0c8e7bf7d6df0ec68eb8c3501e47708da9eb00"},
 }
