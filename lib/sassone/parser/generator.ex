@@ -1237,21 +1237,30 @@ defmodule Sassone.Parser.Generator do
             )
 
           ";" <> rest ->
-            codepoint = original |> binary_part(pos, len) |> String.to_integer(10)
-            pos = pos + len + 1
+            if len == 0 do
+              {:error, %ParseError{reason: {:token, :char_ref}, binary: original, position: pos}}
+            else
+              case Parser.parse_char_ref(binary_part(original, pos, len), 10) do
+                {:ok, codepoint} ->
+                  pos = pos + len + 1
 
-            att_value(
-              rest,
-              more?,
-              original,
-              pos,
-              state,
-              attributes,
-              open_quote,
-              att_name,
-              [acc | <<codepoint::utf8>>],
-              0
-            )
+                  att_value(
+                    rest,
+                    more?,
+                    original,
+                    pos,
+                    state,
+                    attributes,
+                    open_quote,
+                    att_name,
+                    [acc | <<codepoint::utf8>>],
+                    0
+                  )
+
+                {:error, reason} ->
+                  {:error, %ParseError{reason: reason, binary: original, position: pos}}
+              end
+            end
 
           _ in [""] when more? ->
             halt!(
@@ -1305,21 +1314,43 @@ defmodule Sassone.Parser.Generator do
             )
 
           ";" <> rest ->
-            codepoint = original |> binary_part(pos, len) |> String.to_integer(16)
-            pos = pos + len + 1
+            if len == 0 do
+              {:error, %ParseError{reason: {:token, :char_ref}, binary: original, position: pos}}
+            else
+              case Parser.parse_char_ref(binary_part(original, pos, len), 16) do
+                {:ok, codepoint} ->
+                  pos = pos + len + 1
 
-            att_value(
-              rest,
-              more?,
-              original,
-              pos,
-              state,
-              attributes,
-              open_quote,
-              att_name,
-              [acc | <<codepoint::utf8>>],
-              0
-            )
+                  att_value(
+                    rest,
+                    more?,
+                    original,
+                    pos,
+                    state,
+                    attributes,
+                    open_quote,
+                    att_name,
+                    [acc | <<codepoint::utf8>>],
+                    0
+                  )
+
+                  att_value(
+                    rest,
+                    more?,
+                    original,
+                    pos,
+                    state,
+                    attributes,
+                    open_quote,
+                    att_name,
+                    [acc | <<codepoint::utf8>>],
+                    0
+                  )
+
+                {:error, reason} ->
+                  {:error, %ParseError{reason: reason, binary: original, position: pos}}
+              end
+            end
 
           _ in [""] when more? ->
             halt!(
@@ -1338,8 +1369,10 @@ defmodule Sassone.Parser.Generator do
             )
 
           _ ->
-            {:error,
-             %ParseError{reason: {:token, :char_ref}, binary: original, position: pos + len}}
+            {
+              :error,
+              %ParseError{reason: {:token, :char_ref}, binary: original, position: pos + len}
+            }
         end
       end
 
@@ -1378,6 +1411,9 @@ defmodule Sassone.Parser.Generator do
         lookahead buffer, @streaming do
           char <> rest when is_ascii_name_start_char(char) ->
             open_tag_name(rest, more?, original, pos, state, nil, 1)
+
+          token in unquote(utf8_binaries()) when more? ->
+            halt!(element_content_rest(token, more?, original, pos, state))
 
           <<codepoint::utf8>> <> rest when is_utf8_name_start_char(codepoint) ->
             open_tag_name(
@@ -1625,9 +1661,13 @@ defmodule Sassone.Parser.Generator do
                 %ParseError{reason: {:token, :char_ref}, binary: original, position: pos}
               }
             else
-              char = original |> binary_part(pos, len) |> String.to_integer(10)
+              case Parser.parse_char_ref(binary_part(original, pos, len), 10) do
+                {:ok, char} ->
+                  chardata(rest, more?, original, pos + len + 1, state, [acc | <<char::utf8>>], 0)
 
-              chardata(rest, more?, original, pos + len + 1, state, [acc | <<char::utf8>>], 0)
+                {:error, reason} ->
+                  {:error, %ParseError{reason: reason, binary: original, position: pos}}
+              end
             end
 
           char <> rest when char in ?0..?9 ->
@@ -1648,11 +1688,15 @@ defmodule Sassone.Parser.Generator do
         lookahead buffer, @streaming do
           ";" <> rest ->
             if len == 0 do
-              {:error, %ParseError{reason: [], binary: original, position: pos}}
+              {:error, %ParseError{reason: {:token, :char_ref}, binary: original, position: pos}}
             else
-              char = original |> binary_part(pos, len) |> String.to_integer(16)
+              case Parser.parse_char_ref(binary_part(original, pos, len), 16) do
+                {:ok, char} ->
+                  chardata(rest, more?, original, pos + len + 1, state, [acc | <<char::utf8>>], 0)
 
-              chardata(rest, more?, original, pos + len + 1, state, [acc | <<char::utf8>>], 0)
+                {:error, reason} ->
+                  {:error, %ParseError{reason: reason, binary: original, position: pos}}
+              end
             end
 
           char <> rest when char in ?0..?9 or char in ?A..?F or char in ?a..?f ->

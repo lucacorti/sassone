@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 - 2026-11-03
+
+* Sync with saxy 1.7.0
+* Update dependencies
+
 ## 1.0.1 - 2026-07-15
 
 * Update to elixir 1.20 and erlang 29 by @lucacorti in https://github.com/lucacorti/sassone/pull/2

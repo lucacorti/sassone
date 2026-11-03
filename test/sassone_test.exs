@@ -300,6 +300,22 @@ defmodule SassoneTest do
       assert xml == ~s(<?xml version="1.0"?><person><![CDATA[Tom & Jerry]]></person>)
     end
 
+    test "splits CDATA terminators into adjacent sections" do
+      for encoder <- [&Sassone.encode!/1, &Sassone.encode_to_iodata!/1] do
+        document = {nil, "body", [], [{:cdata, "before]]>after]]>"}]}
+
+        assert IO.iodata_to_binary(encoder.(document)) ==
+                 "<body><![CDATA[before]]]]><![CDATA[>after]]]]><![CDATA[>]]></body>"
+      end
+    end
+
+    test "encodes a single byte in a direct CDATA tuple" do
+      for encoder <- [&Sassone.encode!/1, &Sassone.encode_to_iodata!/1] do
+        assert IO.iodata_to_binary(encoder.({nil, "body", [], [{:cdata, ?A}]})) ==
+                 "<body><![CDATA[A]]></body>"
+      end
+    end
+
     test "encodes characters to references" do
       content = [
         {:characters, "Tom & Jerry"}
@@ -338,7 +354,7 @@ defmodule SassoneTest do
       document = {nil, "movie", [], content}
       xml = Sassone.encode!(document, [])
 
-      assert xml == ~s(<?xml version="1.0"?><movie>&foo;&x3C;&x60;</movie>)
+      assert xml == ~s(<?xml version="1.0"?><movie>&foo;&#x3C;&#60;</movie>)
     end
 
     test "encodes comments" do

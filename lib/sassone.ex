@@ -82,6 +82,8 @@ defmodule Sassone do
   alias Sassone.Handler.Accumulating
   alias Sassone.Parser.State
 
+  import Sassone.Parser.Generator.Guards
+
   @doc ~S"""
   Parses XML binary data.
 
@@ -499,17 +501,58 @@ defmodule Sassone do
 
   defp escape(<<_, rest::bits>>, len, original), do: escape(rest, len + 1, original)
 
-  defp cdata(characters), do: [~c"<![CDATA[", characters | ~c"]]>"]
+  defp cdata(characters) do
+    sections = [characters] |> IO.iodata_to_binary() |> :binary.split("]]>", [:global])
+
+    [~c"<![CDATA[", Enum.intersperse(sections, ~c"]]]]><![CDATA[>") | ~c"]]>"]
+  end
 
   defp reference({:entity, reference}), do: [?&, reference, ?;]
-  defp reference({:hexadecimal, reference}), do: [?&, ?x, Integer.to_string(reference, 16), ?;]
-  defp reference({:decimal, reference}), do: [?&, ?x, Integer.to_string(reference, 10), ?;]
+
+  defp reference({:hexadecimal, reference}),
+    do: [?&, ?#, ?x, Integer.to_string(reference, 16), ?;]
+
+  defp reference({:decimal, reference}), do: [?&, ?#, Integer.to_string(reference, 10), ?;]
 
   defp comment(comment), do: [~c"<!--", escape_comment(comment, comment) | ~c"-->"]
+
+  defp escape_comment(<<?-, ?-, _rest::bits>>, _original) do
+    raise ArgumentError, "comment content must not contain --"
+  end
 
   defp escape_comment(<<?->>, original), do: [original, ?\s]
   defp escape_comment(<<>>, original), do: original
   defp escape_comment(<<_char, rest::bits>>, original), do: escape_comment(rest, original)
 
-  defp processing_instruction(name, content), do: [~c"<?", name, ?\s, content | ~c"?>"]
+  defp processing_instruction(name, content) do
+    name = IO.iodata_to_binary(name)
+    content = IO.iodata_to_binary(content)
+
+    if not valid_pi_target?(name) or Regex.match?(~r/\Axml\z/i, name) do
+      raise ArgumentError,
+            "processing instruction target must be an XML Name other than xml (case-insensitive)"
+    end
+
+    if String.contains?(content, "?>") do
+      raise ArgumentError, "processing instruction content must not contain ?>"
+    end
+
+    [~c"<?", name, ?\s, content | ~c"?>"]
+  end
+
+  defp valid_pi_target?(<<codepoint::utf8, rest::binary>>)
+       when is_ascii_name_start_char(codepoint) or is_utf8_name_start_char(codepoint) do
+    valid_pi_target_chars?(rest)
+  end
+
+  defp valid_pi_target?(_name), do: false
+
+  defp valid_pi_target_chars?(<<>>), do: true
+
+  defp valid_pi_target_chars?(<<codepoint::utf8, rest::binary>>)
+       when is_ascii_name_char(codepoint) or is_utf8_name_char(codepoint) do
+    valid_pi_target_chars?(rest)
+  end
+
+  defp valid_pi_target_chars?(_name), do: false
 end

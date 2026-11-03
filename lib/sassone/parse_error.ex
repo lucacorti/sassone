@@ -8,6 +8,7 @@ defmodule Sassone.ParseError do
           | {:wrong_closing_tag, open_tag :: String.t(), close_tag :: String.t()}
           | {:invalid_pi, pi_name :: String.t()}
           | {:invalid_encoding, encoding :: String.t()}
+          | {:invalid_char_ref, codepoint :: non_neg_integer() | :too_long}
           | {:bad_return, {event :: atom(), return :: term()}}
 
   @type t() :: %__MODULE__{reason: reason(), binary: String.t(), position: non_neg_integer()}
@@ -37,6 +38,16 @@ defmodule Sassone.ParseError do
   @impl Exception
   def message(%__MODULE__{reason: {:invalid_encoding, encoding}}) do
     "unexpected encoding declaration #{inspect(encoding)}, only UTF-8 is supported"
+  end
+
+  @impl Exception
+  def message(%__MODULE__{reason: {:invalid_char_ref, :too_long}}) do
+    "unexpected character reference, too many digits"
+  end
+
+  @impl Exception
+  def message(%__MODULE__{reason: {:invalid_char_ref, codepoint}}) do
+    "unexpected character reference to code point #{codepoint}, which is not a valid XML character"
   end
 
   @impl Exception
